@@ -1,0 +1,2 @@
+[targets]
+os3-285-32121.vs.sakura.ne.jp ansible_ssh_user=root
