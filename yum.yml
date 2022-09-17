@@ -1,0 +1,6 @@
+- hosts: all
+  tasks:
+    - name: epel-releaseのyumインストール
+      yum: name=epel-release
+    - name: slコマンドのyumイントール
+      yum: name=sl
