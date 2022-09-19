@@ -1,0 +1,6 @@
+- hosts: all
+  tasks:
+    - name: test1.tar.gzをコントローラからサーバ絵送り込み、展開
+      unarchive:
+        src: ~/test1.tar.gz
+        dest: ~/
