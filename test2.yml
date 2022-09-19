@@ -1,0 +1,10 @@
+- hosts: all
+  tasks:
+    - name: httpdのインストール
+      yum:
+        name: httpd
+        state: present
+    - name: httpdのアンインストール
+      yum:
+        name: httpd
+        state: absent
