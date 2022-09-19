@@ -1,0 +1,105 @@
+- hosts: all
+  tasks:
+  # enable EPEL repo by installing the epel-release package
+  - name: EPEL repoをインストール
+    become: yes
+    yum: name=epel-release state=present
+
+  # httpdのインストール
+  - name: httpdをインストール
+    yum:
+      name: httpd
+      state: present
+  # httpdの起動
+  - name: httpdを起動
+    systemd:
+      name: httpd
+      state: started
+
+  # Javaがインストールされているか確認
+  - name: javaの存在確認
+    shell: which java
+    register: java_which
+    failed_when: java_which.rc not in [0, 1]
+
+  # javaがインストールされていない場合Javaをインストール
+  - name: Java 17をインストール
+    yum:
+      name: https://cdn.azul.com/zulu/bin/zulu-repo-1.0.0-1.noarch.rpm
+      state: present
+    when: java_which.rc == 1
+
+  # MySQL構築
+  - name: remove mariadb-libs
+    yum:
+      state: absent
+      name: mariadb-libs
+#
+#  - name: MySQL5.7をインストール
+#    yum:
+#      name: http://dev.mysql.com/get/mysql57-community-release-el6-7.noarch.rpm
+#      state: present
+#  - name: install necessary libraries
+#    yum:
+#      name: "{{ item }}"
+#      state: present
+#    with_items:
+#      - mysql-community-server
+#      - MySQL-python
+#      - yum-utils
+#
+#  - name: mysql57-communityを有効化
+#    shell: |
+#      yum-config-manager --disable mysql80-community
+#      yum-config-manager --enable mysql57-community
+#
+#  - name: mysql-community-clientをインストール
+#    yum:
+#      name: mysql-community-client
+#      state: present
+
+#  - name: MySQLを起動
+#    service:
+#      name: mysqld
+#      state: started
+#      enabled: yes
+
+  # Install MySQL
+  - name: install mysql repository
+    yum:
+      state: present
+      name: https://dev.mysql.com/get/mysql57-community-release-el6-11.noarch.rpm
+      validate_certs: yes
+
+  - name: Install mysql packages
+    yum: name={{item}} state=present
+    with_items:
+      - mysql-community-server
+      - mysql-community-client
+      - mysql-community-devel
+
+  - name: Install mysql utilities
+    yum: name={{item}} state=present
+    with_items:
+      - mysql-utilities
+      - MySQL-python
+
+
+
+  # プログラムファイル転送
+  - name: APIファイルを送る
+    synchronize:
+      src: ~/library-api-0.0.1-SNAPSHOT.jar
+      dest: ~/
+  - name: UIファイルを送る
+    synchronize:
+      src: ~/library-ui-0.0.1-SNAPSHOT.jar
+      dest: ~/
+  - name: jar_controllerファイルを送る
+    synchronize:
+      src: ~/jar_controller.sh
+      dest: ~/
+  - name: SQLファイルを送る
+    synchronize:
+      src: ~/bookDBinit.sql
+      dest: ~/
