@@ -1,0 +1,6 @@
+- hosts: all
+  tasks:
+    - name: 全てのパッケージをアップデート
+      yum:
+        name:
+        select: latest
