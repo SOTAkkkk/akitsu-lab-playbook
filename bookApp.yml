@@ -65,21 +65,36 @@
       state: started
       enabled: yes
 
+  # library-uiアプリを停止
+  - name: library-uiアプリを停止
+    command: ./jar_controller.sh off ui
+
+  # library-apiアプリを停止
+  - name: library-apiアプリを停止
+    command: ./jar_controller.sh off api
 
   # プログラムファイル転送
   - name: APIファイルを送る
     synchronize:
-      src: ~/library-api-0.0.1-SNAPSHOT.jar
+      src: ~/practice/Java/library-api/target/library-api-0.0.1-SNAPSHOT.jar
       dest: ~/
   - name: UIファイルを送る
     synchronize:
-      src: ~/library-ui-0.0.1-SNAPSHOT.jar
+      src: ~/practice/Java/library-ui/target/library-ui-0.0.1-SNAPSHOT.jar
       dest: ~/
   - name: jar_controllerファイルを送る
     synchronize:
-      src: ~/jar_controller.sh
+      src: ~/practice/Java/library-api/jar_controller.sh
       dest: ~/
   - name: SQLファイルを送る
     synchronize:
-      src: ~/bookDBinit.sql
+      src: ~/practice/Java/library-api/src/main/resources/bookDBinit.sql
       dest: ~/
+
+#  # library-apiアプリを起動
+#  - name: library-apiアプリを起動
+#    command: ./jar_controller.sh on api
+#
+#  # library-uiアプリを起動
+#  - name: library-uiアプリを起動
+#    command: ./jar_controller.sh on ui
