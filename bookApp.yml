@@ -29,46 +29,21 @@
       state: present
     when: java_which.rc == 1
 
-  # MySQL構築
+  # yum clean all
+  - name: clean
+    command: yum clean all
+
+  # mariadb-libs削除
   - name: remove mariadb-libs
     yum:
       state: absent
       name: mariadb-libs
-#
-#  - name: MySQL5.7をインストール
-#    yum:
-#      name: http://dev.mysql.com/get/mysql57-community-release-el6-7.noarch.rpm
-#      state: present
-#  - name: install necessary libraries
-#    yum:
-#      name: "{{ item }}"
-#      state: present
-#    with_items:
-#      - mysql-community-server
-#      - MySQL-python
-#      - yum-utils
-#
-#  - name: mysql57-communityを有効化
-#    shell: |
-#      yum-config-manager --disable mysql80-community
-#      yum-config-manager --enable mysql57-community
-#
-#  - name: mysql-community-clientをインストール
-#    yum:
-#      name: mysql-community-client
-#      state: present
-
-#  - name: MySQLを起動
-#    service:
-#      name: mysqld
-#      state: started
-#      enabled: yes
 
   # Install MySQL
   - name: install mysql repository
     yum:
       state: present
-      name: https://dev.mysql.com/get/mysql57-community-release-el6-11.noarch.rpm
+      name: http://dev.mysql.com/get/mysql57-community-release-el7-8.noarch.rpm
       validate_certs: yes
 
   - name: Install mysql packages
@@ -84,6 +59,11 @@
       - mysql-utilities
       - MySQL-python
 
+  - name: MySQLを起動
+    systemd:
+      name: mysqld
+      state: started
+      enabled: yes
 
 
   # プログラムファイル転送
